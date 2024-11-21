@@ -53,7 +53,7 @@ app.post("/tasks/create", async (req, res) => {
 app.delete("/tasks/:id", async (req, res) => {
   try {
     const taskId = req.params.id;
-    const deletedTask = await Tasks.findOneAndDelete({ id: taskId });
+    const deletedTask = await Tasks.findByIdAndDelete(taskId);
 
     if (!deletedTask) {
       return res.status(404).json({ message: "Task not found" });
