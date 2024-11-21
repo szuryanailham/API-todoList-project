@@ -64,3 +64,28 @@ app.delete("/tasks/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting task", error: error.message });
   }
 });
+
+// Updating new data with "PUT"
+app.put("/tasks/:id", async (req, res) => {
+  const taskId = req.params.id;
+  const { title: newTitle, description: newDescription, status: newStatus, dueDate: newDueDate } = req.body;
+  // filtering request
+  const updateFields = {};
+  if (newTitle) updateFields.title = newTitle;
+  if (newDescription) updateFields.description = newDescription;
+  if (newStatus) updateFields.status = newStatus;
+  if (newDueDate) updateFields.dueDate = newDueDate;
+  try {
+    const updatedTask = await Tasks.findByIdAndUpdate(taskId, { $set: updateFields }, { new: false, runValidators: true });
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    return res.status(200).json({
+      message: "Task updated successfully",
+      data: updatedTask,
+    });
+  } catch (error) {
+    console.error("Error updating task:", error);
+    return res.status(500).json({ message: "Failed to update task", error });
+  }
+});

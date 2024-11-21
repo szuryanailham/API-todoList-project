@@ -13,7 +13,7 @@ export const taskSchemavalidation = new mongoose.Schema({
   description: {
     type: String,
     required: [true, "Description is required"],
-    minlength: [10, "Description should be at least 10 characters long"],
+    minlength: [5, "Description should be at least 10 characters long"],
     maxlength: [500, "Description should not exceed 500 characters"],
   },
   status: {
