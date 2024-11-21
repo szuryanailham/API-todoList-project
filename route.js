@@ -27,11 +27,11 @@ app.get("/tasks", async (req, res) => {
 
 // Creating new data with "POST"
 app.post("/tasks/create", async (req, res) => {
-  const { id, title, description, status, dueDate } = req.body;
+  const { title, description, status, dueDate } = req.body;
+  console.log(req.body);
   const newTask = mongoose.model("Task", taskSchemavalidation);
   try {
     const task = await newTask.create({
-      id,
       title,
       description,
       status,

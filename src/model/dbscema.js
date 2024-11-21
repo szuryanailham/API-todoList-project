@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
 export const taskSchemavalidation = new mongoose.Schema({
-  id: {
-    type: String,
-    required: [true, "ID is required"],
-  },
   title: {
     type: String,
     required: [true, "Title is required"],
