@@ -89,3 +89,17 @@ app.put("/tasks/:id", async (req, res) => {
     return res.status(500).json({ message: "Failed to update task", error });
   }
 });
+
+// fetching detail data  with "Get"
+app.get("/tasks/:id", async (req, res) => {
+  const taskId = req.params.id;
+  try {
+    const task = await Tasks.findById(taskId).exec();
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to retrieve task", details: err.message });
+  }
+});
