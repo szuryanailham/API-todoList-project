@@ -28,7 +28,6 @@ app.get("/tasks", async (req, res) => {
 // Creating new data with "POST"
 app.post("/tasks/create", async (req, res) => {
   const { title, description, status, dueDate } = req.body;
-  console.log(req.body);
   const newTask = mongoose.model("Task", taskSchemavalidation);
   try {
     const task = await newTask.create({
@@ -59,7 +58,7 @@ app.delete("/tasks/:id", async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    res.status(200).json({ message: "Task deleted successfully", task: deletedTask });
+    res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting task", error: error.message });
   }
