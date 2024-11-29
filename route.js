@@ -89,7 +89,7 @@ app.put("/tasks/:id", async (req, res) => {
   }
 });
 
-// fetching detail data  with "Get"
+// fetching detail data  with "GET"
 app.get("/tasks/:id", async (req, res) => {
   const taskId = req.params.id;
   try {
@@ -100,5 +100,24 @@ app.get("/tasks/:id", async (req, res) => {
     res.json(task);
   } catch (err) {
     res.status(500).json({ error: "Failed to retrieve task", details: err.message });
+  }
+});
+
+// fetching update complated task
+app.patch("/tasks/:id/done", async (req, res) => {
+  const taskId = req.params.id;
+  try {
+    const task = await Tasks.findById(taskId);
+    if (task) {
+      task.status = "completed";
+      await task.save();
+      console.log(task);
+      res.status(200).json({ message: "Task status updated to completed", task });
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error make done", error: error.message });
   }
 });

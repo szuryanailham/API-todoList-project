@@ -12,5 +12,5 @@ export async function connectMonggoDB() {
     console.error("Error connecting to MongoDB:", error);
   }
 }
-
 export const Tasks = mongoose.model("Task", taskSchemavalidation);
+export const DoneTasks = mongoose.model("DoneTasks", taskSchemavalidation);
