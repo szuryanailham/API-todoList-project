@@ -31,38 +31,14 @@ export const taskSchemavalidation = new mongoose.Schema({
 });
 
 taskSchemavalidation.pre("save", async function (next) {
-  try {
-    if (!this.isNew && this.status === "completed") {
-      console.log("Moving task to doneTasks collection...");
-      const DoneTask = mongoose.model("DoneTasks", taskSchemavalidation);
-      console.log(DoneTask);
-      const newDoneTask = await DoneTask.create({
-        title: this.title,
-        description: this.description,
-        status: this.status,
-        dueDate: this.dueDate,
-        completed_at: Date.now(),
-      });
-      console.log(newDoneTask);
-      newDoneTask.save();
-      await this.deleteOne();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
 
-      console.log("Task successfully moved to doneTasks collection.");
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
-      const dateValue = new Date(this.dueDate);
-      if (dateValue < today || dateValue >= tomorrow.setDate(tomorrow.getDate() + 1)) {
-        return next(new Error("The date must be today or tomorrow."));
-      }
-    }
-
-    next();
-  } catch (error) {
-    console.error("Error in pre-save middleware:", error);
-    next(error);
+  const dateValue = new Date(this.dueDate);
+  if (dateValue < today || dateValue >= tomorrow.setDate(tomorrow.getDate() + 1)) {
+    return next(new Error("The date must be today or tomorrow."));
   }
+  next();
 });

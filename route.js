@@ -106,18 +106,32 @@ app.get("/tasks/:id", async (req, res) => {
 // fetching update complated task
 app.patch("/tasks/:id/done", async (req, res) => {
   const taskId = req.params.id;
+
   try {
     const task = await Tasks.findById(taskId);
-    if (task) {
-      task.status = "completed";
-      await task.save();
-      console.log(task);
-      res.status(200).json({ message: "Task status updated to completed", task });
+    if (task && task.status === "in-progress") {
+      const DoneTask = mongoose.model("DoneTasks", taskSchemavalidation);
+      const newDoneTask = await DoneTask.create({
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        dueDate: task.dueDate,
+        completed_at: Date.now(),
+      });
+      await task.deleteOne();
+      res.status(200).json({
+        message: "Task status updated to completed",
+        newDoneTask,
+      });
     } else {
-      res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({ message: "Task not found" });
     }
+    task.status = "completed";
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error make done", error: error.message });
+    console.error("Error updating task status:", error);
+    res.status(500).json({
+      message: "Error making task done",
+      error: error.message,
+    });
   }
 });
